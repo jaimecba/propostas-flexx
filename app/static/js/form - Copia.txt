@@ -1,0 +1,679 @@
+// 
+// FORM.JS - CONTROLE DO FORMULÁRIO (COM VALIDAÇÃO DE CNPJ + PREÇOS API)
+// 
+// Integrado com precos.js para buscar preços da API em tempo real
+// Integrado com validação de CNPJ via Receita Federal
+// 
+
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('✅ form.js carregado');
+
+    // 
+    // ELEMENTOS DO DOM
+    // 
+    const $ = (id) => document.getElementById(id);
+    
+    const el = {
+        // Dados do cliente
+        cnpj: $('cnpj'),
+        clienteNome: $('cliente_nome'),
+        nomeFantasia: $('nome_fantasia'),
+        email: $('email'),
+        telefone: $('telefone'),
+        whatsapp: $('whatsapp'),
+        
+        // Plano e usuários
+        usuarios: $('usuarios'),
+        plano: $('plano'),
+        usuariosArredondados: $('usuariosArredondados'),
+        
+        // Valores
+        valorMensal: $('valorMensal'),
+        setup: $('setup'),
+        treinamentoValor: $('treinamentoValor'),
+        descontoValor: $('descontoValor'),
+        descontoPercent: $('descontoPercent'),
+        observacoes: $('observacoes'),
+        charCount: $('charCount'),
+        
+        // Treinamento
+        treinamentoOnline: $('treinamentoOnline'),
+        treinamentoPresencial: $('treinamentoPresencial'),
+        treinamentoHibrido: $('treinamentoHibrido'),
+        
+        // Serviços
+        licencaFacial: $('licenca_facial'),
+        qtdLicencaFacial: $('qtd_licenca_facial'),
+        gestaoArquivos: $('gestao_arquivos'),
+        controleFerias: $('controle_ferias'),
+        requisCalcInt: $('requis_calc_int'),
+        quantidadeLicenca: $('quantidade-licenca'),
+        
+        // Resumo
+        resumoValorMensal: $('resumoValorMensal'),
+        resumoSetup: $('resumoSetup'),
+        resumoTreinamento: $('resumoTreinamento'),
+        resumoServicosValor: $('resumo-servicos-valor'),
+        resumoServicosItens: $('resumoServicosItens'),
+        resumoSubtotal: $('resumoSubtotal'),
+        resumoDesconto: $('resumoDesconto'),
+        resumoTotal: $('resumoTotal'),
+        
+        // Botões
+        btnGerar: $('btnGerar'),
+        btnLimpar: $('btnLimpar'),
+        btnValidarCNPJ: $('btnValidarCNPJ'),
+        
+        // Formulário
+        form: $('formProposta')
+    };
+
+    // 
+    // FUNÇÕES AUXILIARES
+    // 
+    
+    function brl(valor) {
+        /**Formata número para moeda BRL*/
+        const num = Number(valor) || 0;
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(num);
+    }
+
+    function parseBRL(texto) {
+        /**Parse de moeda BRL para número*/
+        if (!texto) return 0;
+        const limpo = String(texto)
+            .replace(/[^\d,.-]/g, '')
+            .replace(/\./g, '')
+            .replace(',', '.');
+        return parseFloat(limpo) || 0;
+    }
+
+    function roundUp10(num) {
+        /**Arredonda para a próxima dezena*/
+        const n = parseInt(num) || 0;
+        if (n <= 0) return 10;
+        if (n > 5000) return 'Consultar Comercial';
+        return Math.ceil(n / 10) * 10;
+    }
+
+    // 
+    // FUNÇÕES DE CÁLCULO
+    // 
+
+    function getRoundedUsers() {
+        /**Obtém quantidade de usuários arredondada*/
+        const usuarios = parseInt(el.usuarios.value) || 0;
+        return roundUp10(usuarios);
+    }
+
+    function getMonthlyPrice() {
+        /**Obtém preço mensal do plano*/
+        const users = getRoundedUsers();
+        if (users === 'Consultar Comercial') return 'Consultar Comercial';
+        
+        const plano = el.plano.value;
+        if (plano === 'Desktop' && users > 1000) return 'Consultar Comercial';
+        
+        // CRÍTICO: Chamar obterPrecoPlano do precos.js
+        if (typeof obterPrecoPlano === 'function') {
+            const value = obterPrecoPlano(plano, parseInt(el.usuarios.value));
+            console.log(`📊 getMonthlyPrice: ${plano} x ${el.usuarios.value} = R$ ${value}`);
+            return value;
+        }
+        return 0;
+    }
+
+    function getTraining() {
+        /**Obtém tipo e valor de treinamento*/
+        if (el.treinamentoOnline && el.treinamentoOnline.checked) {
+            return { label: 'Online', value: 0 };
+        }
+        if (el.treinamentoPresencial && el.treinamentoPresencial.checked) {
+            return { label: 'Presencial', value: 350 };
+        }
+        if (el.treinamentoHibrido && el.treinamentoHibrido.checked) {
+            return { label: 'Híbrido', value: 250 };
+        }
+        return { label: 'Online', value: 0 };
+    }
+
+    function getSelectedServices() {
+        /**Obtém serviços selecionados e calcula total*/
+        const items = [];
+        const users = getRoundedUsers();
+        
+        if (users === 'Consultar Comercial') {
+            return { total: 0, items: [] };
+        }
+
+        // Licença Facial (fixo)
+        if (el.licencaFacial && el.licencaFacial.checked) {
+            const qtd = parseInt(el.qtdLicencaFacial.value) || 0;
+            if (qtd > 0) {
+                const valor = 23.90 * qtd;
+                items.push({ nome: 'Licença Facial', valor });
+                console.log(`📊 Licença Facial: ${qtd} x R$ 23.90 = R$ ${valor}`);
+            }
+        }
+
+        // Gestão de Arquivos (por pessoa)
+        if (el.gestaoArquivos && el.gestaoArquivos.checked) {
+            const valor = 0.95 * users;
+            items.push({ nome: 'Gestão de Arquivos', valor });
+            console.log(`📊 Gestão de Arquivos: ${users} x R$ 0.95 = R$ ${valor}`);
+        }
+
+        // Controle de Férias (por pessoa)
+        if (el.controleFerias && el.controleFerias.checked) {
+            const valor = 0.85 * users;
+            items.push({ nome: 'Controle de Férias', valor });
+            console.log(`📊 Controle de Férias: ${users} x R$ 0.85 = R$ ${valor}`);
+        }
+
+        // Mais Requis Cálc Int (por pessoa)
+        if (el.requisCalcInt && el.requisCalcInt.checked) {
+            const valor = 0.45 * users;
+            items.push({ nome: 'Mais Requis Cálc Int', valor });
+            console.log(`📊 Mais Requis Cálc Int: ${users} x R$ 0.45 = R$ ${valor}`);
+        }
+
+        const total = items.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+        return { total, items };
+    }
+
+    
+        // 
+    // FUNÇÃO PRINCIPAL: ATUALIZAR RESUMO
+    // 
+
+        function renderSummary() {
+        /**
+         * FUNÇÃO CRÍTICA: Atualiza o resumo da proposta em tempo real
+         * Esta função é chamada TODA VEZ que o usuário digita algo
+         * 
+         * FLUXO:
+         * 1. Obter todos os valores dos campos
+         * 2. Validar se os valores são números válidos
+         * 3. Calcular os totais
+         * 4. Atualizar o HTML com os resultados
+         */
+        console.log('🔄 renderSummary chamado');
+
+        // ========================================
+        // PASSO 1: OBTER TODOS OS VALORES
+        // ========================================
+        
+        // Quantidade de usuários arredondada
+        const rounded = getRoundedUsers();
+        
+        // Preço mensal do plano (pode ser número ou "Consultar Comercial")
+        const monthly = getMonthlyPrice();
+        
+        // Tipo e valor do treinamento
+        const training = getTraining(); // Retorna { label: 'Online', value: 0 }
+        
+        // Serviços adicionais selecionados
+        const services = getSelectedServices(); // Retorna { total: 0, items: [...] }
+        
+        // Setup (valor digitado no campo) - COM VALIDAÇÃO
+        let setupValue = 0;
+        if (el.setup && el.setup.value) {
+            const setupParsed = parseBRL(el.setup.value);
+            setupValue = !isNaN(setupParsed) ? setupParsed : 0;
+        }
+        
+        // 🟢 CORREÇÃO: Desconto (Buscando pelo ID correto "desconto" do HTML)
+        const campoDesconto = document.getElementById('desconto');
+        let descontoValue = 0;
+        if (campoDesconto && campoDesconto.value) {
+            // Limpa qualquer "R$" ou espaço antes de converter
+            const valorLimpo = campoDesconto.value.replace('R$', '').trim();
+            const descParsed = parseBRL(valorLimpo);
+            descontoValue = !isNaN(descParsed) ? descParsed : 0;
+        }
+
+        // ========================================
+        // PASSO 2: ATUALIZAR USUÁRIOS ARREDONDADOS
+        // ========================================
+        if (el.usuariosArredondados) {
+            el.usuariosArredondados.textContent = rounded === 'Consultar Comercial' ? rounded : `Faixa: ${rounded}`;
+        }
+
+        // ========================================
+        // PASSO 3: BLOCO MENSAL (Licença + Serviços)
+        // ========================================
+        
+        // Converter monthly para número (se for "Consultar Comercial", usar 0)
+        const monthlyNumber = typeof monthly === 'number' ? monthly : 0;
+        
+        // 3.1 - Atualizar "Valor Total da Licença (Mensal)"
+        if (el.resumoValorMensal) {
+            if (monthly === 'Consultar Comercial') {
+                el.resumoValorMensal.textContent = 'Consultar Comercial';
+            } else {
+                el.resumoValorMensal.textContent = brl(monthlyNumber);
+            }
+        }
+
+        // Atualizar "Valor da Mensalidade" na sessão "Plano e Usuários"
+        if (el.valorMensal) {
+            if (monthly === 'Consultar Comercial') {
+                el.valorMensal.textContent = 'Consultar Comercial';
+            } else {
+                el.valorMensal.textContent = brl(monthlyNumber);
+            }
+        }
+
+        // 3.2 - Atualizar lista de "Serviços Adicionais" (com os nomes de cada um)
+        if (el.resumoServicosItens) {
+            // Validar se services.items existe e é um array
+            if (services && services.items && Array.isArray(services.items) && services.items.length > 0) {
+                // Se tem serviços, mostrar cada um com seu valor
+                const itensHtml = services.items
+                    .map(item => 
+                        `<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>- ${item.nome}:</span>
+                            <span>${brl(item.valor)}</span>
+                        </div>`
+                    ).join('');
+                el.resumoServicosItens.innerHTML = itensHtml;
+                el.resumoServicosItens.style.display = 'block';
+            } else {
+                // Se não tem serviços, deixar vazio
+                el.resumoServicosItens.innerHTML = '';
+                el.resumoServicosItens.style.display = 'none';
+            }
+        }
+
+        // 3.3 - Atualizar "Valor Total dos Serviços Adicionais"
+        const totalServicosElement = document.getElementById('resumoTotalServicos');
+        if (totalServicosElement) {
+            // Validar se services.total é um número válido
+            const servicosTotal = services && typeof services.total === 'number' ? services.total : 0;
+            totalServicosElement.textContent = brl(servicosTotal);
+        }
+
+        // 3.4 - Atualizar "Valor Total do Contrato (Mensal)"
+        // FÓRMULA: Licença + Serviços Adicionais
+        const servicosTotal = services && typeof services.total === 'number' ? services.total : 0;
+        const totalContratoMensal = monthlyNumber + servicosTotal;
+        const totalContratoElement = document.getElementById('resumoTotalContratoMensal');
+        if (totalContratoElement) {
+            if (monthly === 'Consultar Comercial') {
+                totalContratoElement.textContent = 'Consultar Comercial';
+            } else {
+                totalContratoElement.textContent = brl(totalContratoMensal);
+            }
+        }
+
+        // ========================================
+        // PASSO 4: BLOCO AVULSOS (Setup + Treinamento)
+        // ========================================
+        
+        // 4.1 - Atualizar "Setup de Implantação"
+        if (el.resumoSetup) {
+            el.resumoSetup.textContent = brl(setupValue);
+        }
+
+        // 4.2 - Atualizar "Treinamento"
+        if (el.resumoTreinamento) {
+            // Atualizar o label com o tipo de treinamento (Online, Presencial, Híbrido)
+            const labelTreinamento = document.getElementById('resumoTreinamentoLabel');
+            if (labelTreinamento) {
+                labelTreinamento.textContent = `Treinamento (${training.label}):`;
+            }
+            // Atualizar o valor do treinamento
+            el.resumoTreinamento.textContent = brl(training.value);
+        }
+
+        // Atualizar "Valor do Treinamento" na sessão "Escolha o tipo de treinamento" 
+        if (el.treinamentoValor) {
+            // Como é um campo de input, usamos .value e formatamos apenas o número (ex: 350,00)
+            el.treinamentoValor.value = training.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // 4.3 - Atualizar "Total Avulsos"
+        // FÓRMULA: Setup + Treinamento (APENAS ESSES DOIS)
+        const totalAvulsos = setupValue + training.value;
+        if (el.resumoSubtotal) {
+            el.resumoSubtotal.textContent = brl(totalAvulsos);
+        }
+
+        // ========================================
+        // PASSO 5: BLOCO TOTAL GERAL
+        // ========================================
+        
+        // 5.1 - Atualizar "Desconto Aplicado"
+        if (el.resumoDesconto) {
+            el.resumoDesconto.textContent = `- ${brl(descontoValue)}`;
+        }
+
+        // 5.2 - Atualizar "TOTAL GERAL A PAGAR (AVULSOS)"
+        // FÓRMULA: Total Avulsos - Desconto
+        // Se o resultado for negativo, mostrar 0 (não pode pagar valor negativo)
+        const totalGeral = Math.max(totalAvulsos - descontoValue, 0);
+        if (el.resumoTotal) {
+            el.resumoTotal.textContent = brl(totalGeral);
+        }
+
+        // ========================================
+        // PASSO 6: LOG PARA VERIFICAÇÃO (Opcional)
+        // ========================================
+        console.log('✅ renderSummary concluído', {
+            mensalidade: monthlyNumber,
+            servicos: servicosTotal,
+            totalMensal: totalContratoMensal,
+            setup: setupValue,
+            treinamento: training.value,
+            totalAvulsos: totalAvulsos,
+            desconto: descontoValue,
+            totalGeral: totalGeral
+        });
+    }
+
+    // 
+    // HANDLERS: CNPJ (VALIDAÇÃO COM RECEITA FEDERAL)
+    // 
+
+    function handleCNPJInput(e) {
+        /**Formata CNPJ enquanto digita*/
+        let valor = e.target.value.replace(/\D/g, '');
+        if (valor.length <= 14) {
+            if (valor.length > 0) {
+                valor = valor.substring(0, 2) + '.' + 
+                       valor.substring(2, 5) + '.' + 
+                       valor.substring(5, 8) + '/' + 
+                       valor.substring(8, 12) + '-' + 
+                       valor.substring(12, 14);
+            }
+            e.target.value = valor;
+        }
+    }
+
+    function handleCNPJChange(e) {
+    const cnpj = e.target.value;
+    const feedback = document.getElementById('cnpjFeedback');
+    const cnpjError = document.getElementById('cnpjError');
+    
+    // CRÍTICO: NÃO validar se o campo estiver vazio
+    if (!cnpj || cnpj.trim() === '') {
+        // Limpar todos os feedbacks
+        if (feedback) {
+            feedback.className = 'feedback';
+            feedback.textContent = '';
+        }
+        if (cnpjError) {
+            cnpjError.style.display = 'none';
+            cnpjError.textContent = '';
+        }
+        return;  // SAIR AQUI - não validar campo vazio
+    }
+    
+    // Só validar se houver conteúdo
+    const resultado = validarCNPJ(cnpj);
+    if (resultado.valido) {
+        if (feedback) {
+            feedback.className = 'feedback success';
+            feedback.textContent = 'CNPJ válido';
+        }
+        if (cnpjError) {
+            cnpjError.style.display = 'none';
+        }
+    } else {
+        if (feedback) {
+            feedback.className = 'feedback error';
+            feedback.textContent = resultado.mensagem;
+        }
+        if (cnpjError) {
+            cnpjError.style.display = 'block';
+            cnpjError.textContent = '❌ CNPJ inválido, verifique!';
+        }
+    }
+}
+
+    function handleValidarCNPJ(e) {
+        /**Busca dados do CNPJ na Receita Federal*/
+        e.preventDefault();
+        const cnpj = el.cnpj.value;
+        const feedback = document.getElementById('cnpjFeedback');
+        
+        if (!cnpj) {
+            if (feedback) {
+                feedback.className = 'feedback error';
+                feedback.textContent = 'Digite um CNPJ para validar.';
+            }
+            return;
+        }
+
+        // Validar formato
+        const resultado = validarCNPJ(cnpj);
+        if (!resultado.valido) {
+            if (feedback) {
+                feedback.className = 'feedback error';
+                feedback.textContent = resultado.mensagem;
+            }
+            return;
+        }
+
+        // CNPJ válido - mostrar loading
+        if (feedback) {
+            feedback.className = 'feedback info';
+            feedback.textContent = '⏳ Consultando Receita Federal...';
+        }
+        if (el.btnValidarCNPJ) el.btnValidarCNPJ.disabled = true;
+
+        // Chamar API para buscar dados do CNPJ
+        buscarDadosCNPJ(cnpj);
+    }
+
+    function buscarDadosCNPJ(cnpj) {
+    /**Busca os dados do CNPJ na sua própria API*/
+    const cnpjLimpo = cnpj.replace(/\D/g, '');
+    
+    console.log(`🔍 Buscando CNPJ: ${cnpjLimpo}`);
+    
+    // Chamar SUA API (não a BrasilAPI diretamente)
+    fetch(`/api/cnpj/${cnpjLimpo}`)
+        .then(response => {
+            console.log(`📡 Status da resposta: ${response.status}`);
+            
+            // Se não encontrou (404)
+            if (response.status === 404) {
+                throw new Error('CNPJ não encontrado');
+            }
+            
+            // Se houver outro erro
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            console.log('✅ Dados recebidos:', data);
+            preencherDadosCNPJAlternativo(data);
+        })
+        .catch(error => {
+            console.error('❌ Erro na busca:', error);
+            const feedback = document.getElementById('cnpjFeedback');
+            if (feedback) {
+                feedback.className = 'feedback warning';
+                feedback.textContent = '⚠️ CNPJ válido, mas não encontrado na Receita Federal. Preencha manualmente.';
+            }
+            if (el.btnValidarCNPJ) el.btnValidarCNPJ.disabled = false;
+        });
+}
+
+    function preencherDadosCNPJ(data) {
+        /**Preenche os campos com dados da API minha-api.com.br*/
+        const feedback = document.getElementById('cnpjFeedback');
+        try {
+            // Preencher Razão Social
+            if (data.razao_social && el.clienteNome) {
+                el.clienteNome.value = data.razao_social;
+                console.log('✅ Razão Social preenchida:', data.razao_social);
+            }
+            // Preencher Nome Fantasia
+            if (data.nome_fantasia && el.nomeFantasia) {
+                el.nomeFantasia.value = data.nome_fantasia;
+                console.log('✅ Nome Fantasia preenchido:', data.nome_fantasia);
+            }
+            // Preencher Email
+            if (data.email && el.email) {
+                el.email.value = data.email;
+                console.log('✅ Email preenchido:', data.email);
+            }
+            // Preencher Telefone
+            if (data.telefone && el.telefone) {
+                el.telefone.value = data.telefone;
+                console.log('✅ Telefone preenchido:', data.telefone);
+            }
+
+            // Mostrar sucesso
+            if (feedback) {
+                feedback.className = 'feedback success';
+                feedback.textContent = '✓ Dados carregados com sucesso!';
+            }
+            if (el.btnValidarCNPJ) el.btnValidarCNPJ.disabled = false;
+        } catch (error) {
+            console.error('Erro ao preencher dados:', error);
+            if (feedback) {
+                feedback.className = 'feedback error';
+                feedback.textContent = '❌ Erro ao processar dados do CNPJ.';
+            }
+            if (el.btnValidarCNPJ) el.btnValidarCNPJ.disabled = false;
+        }
+    }
+
+    function preencherDadosCNPJAlternativo(data) {
+        /**Preenche os campos com dados da API brasilapi.com.br*/
+        const feedback = document.getElementById('cnpjFeedback');
+        try {
+            // Preencher Razão Social
+            if (data.nome_fantasia && el.clienteNome) {
+                el.clienteNome.value = data.nome_fantasia;
+                console.log('✅ Razão Social preenchida:', data.nome_fantasia);
+            }
+            // Preencher Nome Fantasia - CORRIGIDO: usar 'nome' ou 'descricao'
+            if (data.nome && el.nomeFantasia) {
+                el.nomeFantasia.value = data.nome;
+                console.log('✅ Nome Fantasia preenchido:', data.nome);
+            } else if (data.descricao && el.nomeFantasia) {
+                el.nomeFantasia.value = data.descricao;
+                console.log('✅ Nome Fantasia preenchido:', data.descricao);
+            }
+
+            // Mostrar sucesso
+            if (feedback) {
+                feedback.className = 'feedback success';
+                feedback.textContent = '✓ Dados carregados com sucesso!';
+            }
+            if (el.btnValidarCNPJ) el.btnValidarCNPJ.disabled = false;
+        } catch (error) {
+            console.error('Erro ao preencher dados:', error);
+            if (feedback) {
+                feedback.className = 'feedback error';
+                feedback.textContent = '❌ Erro ao processar dados do CNPJ.';
+            }
+            if (el.btnValidarCNPJ) el.btnValidarCNPJ.disabled = false;
+        }
+    }
+
+    // 
+    // EVENT LISTENERS
+    // 
+
+    // CNPJ
+    if (el.cnpj) {
+        el.cnpj.addEventListener('input', handleCNPJInput);
+        el.cnpj.addEventListener('blur', handleCNPJChange);
+    }
+    if (el.btnValidarCNPJ) {
+        el.btnValidarCNPJ.addEventListener('click', handleValidarCNPJ);
+    }
+
+    // Usuários
+    if (el.usuarios) {
+        el.usuarios.addEventListener('input', renderSummary);
+        el.usuarios.addEventListener('change', renderSummary);
+    }
+
+    // Plano
+    if (el.plano) {
+        el.plano.addEventListener('change', renderSummary);
+    }
+
+    // Treinamento
+    if (el.treinamentoOnline) el.treinamentoOnline.addEventListener('change', renderSummary);
+    if (el.treinamentoPresencial) el.treinamentoPresencial.addEventListener('change', renderSummary);
+    if (el.treinamentoHibrido) el.treinamentoHibrido.addEventListener('change', renderSummary);
+
+    // Serviços
+    if (el.licencaFacial) {
+        el.licencaFacial.addEventListener('change', function() {
+            if (el.quantidadeLicenca) {
+                el.quantidadeLicenca.style.display = this.checked ? 'block' : 'none';
+            }
+            renderSummary();
+        });
+    }
+    if (el.qtdLicencaFacial) el.qtdLicencaFacial.addEventListener('input', renderSummary);
+    if (el.gestaoArquivos) el.gestaoArquivos.addEventListener('change', renderSummary);
+    if (el.controleFerias) el.controleFerias.addEventListener('change', renderSummary);
+    if (el.requisCalcInt) el.requisCalcInt.addEventListener('change', renderSummary);
+
+    // Setup
+    if (el.setup) el.setup.addEventListener('input', renderSummary);
+
+    // Desconto
+    if (el.descontoValor) el.descontoValor.addEventListener('input', renderSummary);
+    if (el.descontoPercent) el.descontoPercent.addEventListener('input', renderSummary);
+
+    // Observações
+        // 🟢 CORREÇÃO: Garantir que o formulário "escute" quando você digita o desconto
+    const inputDesconto = document.getElementById('desconto');
+    if (inputDesconto) {
+        inputDesconto.addEventListener('input', renderSummary);
+        inputDesconto.addEventListener('change', renderSummary);
+    }
+    if (el.descontoPercent) el.descontoPercent.addEventListener('input', renderSummary);
+
+    // Botão Limpar
+    if (el.btnLimpar) {
+        el.btnLimpar.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Tem certeza que deseja limpar o formulário?')) {
+                if (el.form) el.form.reset();
+                // Limpar feedbacks
+                const feedbacks = document.querySelectorAll('.feedback');
+                feedbacks.forEach(fb => {
+                    fb.className = 'feedback';
+                    fb.textContent = '';
+                });
+                renderSummary();
+            }
+        });
+    }
+
+    // 
+    // INICIALIZAÇÃO
+    // 
+    
+    // Esconder campo de quantidade de licença inicialmente
+    if (el.quantidadeLicenca) {
+        el.quantidadeLicenca.style.display = 'none';
+    }
+
+    // Atualizar resumo na primeira carga
+    renderSummary();
+
+    console.log('✅ form.js inicializado com sucesso');
+});
+
+// 
+// EXPORTAR FUNÇÃO GLOBAL (para precos.js chamar)
+// 
+// A função renderSummary está disponível globalmente

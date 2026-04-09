@@ -1,0 +1,6 @@
+Proximo passo ...
+
+
+
+Opção 2: Criar uma Tela de Administração de Preços
+Fazer uma tela HTML simples (um painel de controle) onde você pode ver todos os preços atuais do banco de dados e editá-los facilmente.

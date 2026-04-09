@@ -1,0 +1,25 @@
+0-10			
+		Basic	18,91
+		Pro	24,72
+		Ult	34,13
+11-50			
+		Basic	1,93
+		Pro	2,47
+		Ult	3,44
+51-100			
+		Basic	1,78
+		Pro	2,30
+		Ult	3,18
+101-200			
+		Basic	1,65
+		Pro	2,13
+		Ult	2,93
+			
+201-1000	Basic	1,54
+		Pro	1,98
+		Ult	2,77
+			
+1001		Basic	1,30
+		Pro	1,67
+		Ult	2,31
+			

@@ -1,0 +1,217 @@
+prompt foi esse: 
+
+checklist técnico do MVP
+backlog priorizado por sprint
+especificação funcional
+plano de entrega para a equipe
+
+
+Entendido! Vou preparar um checklist técnico para o MVP, um backlog priorizado por sprint, a especificação funcional e um plano de entrega detalhado para a equipe.
+
+Perfeito. Vou te entregar os 4 formatos, já alinhados ao que apareceu no código e ao texto de evolução do MVP.
+
+1) Checklist técnico do MVP
+
+Base da proposta
+
+Campo Plano com opções exatas: Basic, PRO, Ultimate, Desktop
+Campo Quantidade de Pessoas renomeado corretamente
+Regra de arredondamento por faixa de 10 em 10
+Busca de valor na tabela conforme plano + faixa de pessoas
+Campo de serviços adicionais com checkboxes
+Remoção de qualquer texto genérico tipo “baseado na quantidade de usuários”
+Remoção do campo Taxa Única (R$)
+Exibição apenas de Valor Serviços Adicionais
+
+Serviços adicionais
+
+Licença Facial
+Gestão de Arquivos
+Controle de Férias
+Mais Requis Cálc Int
+Cálculo por faixa de pessoas
+Multiplicação pela tabela de preços correta
+Total consolidado por serviço e total geral
+
+Treinamento e setup
+
+Renomear seção para Escolha o tipo de treinamento
+Inverter ordem visual entre Setup Inicial e Valor do Treinamento
+Carregar valor automático ao escolher o tipo de treinamento
+Separar desconto em R$ e %
+Converter automaticamente um formato no outro
+
+Resumo da proposta
+
+Exibir Valor da Mensalidade
+Exibir Valor do Setup de Implantação
+Exibir Treinamento com tipo escolhido
+Exibir Serviços Adicionais detalhados individualmente
+Exibir total final consolidado
+
+Qualidade e validação
+
+Validar cálculos com 3 ou mais cenários
+Validar plano/usuários por faixa
+Validar serviços adicionais por faixa
+Validar desconto em R$ e %
+Revisar labels e ordenação da tela
+Testar fluxo completo de criação da proposta
+
+
+2) Backlog priorizado por sprint
+
+Sprint 1 — Estrutura e regras centrais
+
+Renomear Quantidade de Usuários para Quantidade de Pessoas
+Implementar regra de arredondamento por faixa de 10
+Ajustar busca de preço por plano + faixa
+Garantir opções exatas dos planos
+Revisar labels do formulário principal
+
+Sprint 2 — Serviços adicionais
+
+Implementar os 4 serviços adicionais
+Remover texto genérico da seção
+Calcular valor por faixa de pessoas
+Consolidar total de serviços adicionais
+Remover campo Taxa Única (R$)
+
+Sprint 3 — Treinamento, setup e desconto
+
+Renomear seção para Escolha o tipo de treinamento
+Carregar automaticamente o valor do treinamento
+Inverter ordem entre setup e treinamento
+Separar desconto em R$ e %
+Criar conversão automática entre os dois formatos
+
+Sprint 4 — Resumo e refinamento
+
+Ajustar rótulos do resumo final
+Exibir serviços adicionais individualmente
+Exibir totais por item
+Revisar consistência visual
+Validar experiência completa da proposta
+
+Sprint 5 — Estabilização
+
+Criar testes de cálculo
+Criar testes de validação
+Revisar bugs de arredondamento
+Revisar mensagens de erro
+Homologar fluxo com dados reais
+
+
+3) Especificação funcional
+
+3.1 Objetivo
+
+A página da proposta deve permitir montar uma proposta comercial com cálculo automático de mensalidade, serviços adicionais, treinamento, setup e desconto, exibindo um resumo final claro para validação e envio.
+
+3.2 Regras de negócio
+
+Plano e pessoas
+
+O sistema deve aceitar apenas os planos:Basic
+PRO
+Ultimate
+Desktop
+
+
+O campo deve ser exibido como Quantidade de Pessoas
+A quantidade deve ser sempre arredondada para a próxima faixa de 10exemplo: 11 → 20
+exemplo: 51 → 60
+
+
+O valor mensal deve ser obtido pela tabela correspondente ao plano e à faixa
+
+Serviços adicionais
+
+O usuário pode selecionar:Licença Facial
+Gestão de Arquivos
+Controle de Férias
+Mais Requis Cálc Int
+
+
+O valor deve ser calculado de acordo com:faixa de pessoas
+plano escolhido
+regra da tabela de preços
+
+
+O sistema deve mostrar:valor de cada serviço
+total consolidado dos serviços adicionais
+
+
+O campo Taxa Única (R$) não deve aparecer
+
+Treinamento e setup
+
+A seção deve se chamar Escolha o tipo de treinamento
+Ao selecionar o tipo, o valor correspondente deve ser preenchido automaticamente
+O setup deve ser exibido em posição posterior ou anterior conforme o layout definido
+O desconto deve existir em duas formas:valor em reais
+percentual
+
+
+Ao digitar um, o sistema deve calcular automaticamente o outro
+
+Resumo da proposta
+
+O resumo deve exibir:
+
+Valor da Mensalidade
+Valor do Setup de Implantação
+Treinamento
+Serviços Adicionais detalhados
+Desconto
+Total final
+
+3.3 Critérios de aceite
+
+A proposta é calculada corretamente para qualquer combinação válida
+A faixa de pessoas é sempre arredondada para cima
+O resumo mostra cada item individualmente
+O desconto é sincronizado entre R$ e %
+Os nomes dos campos seguem o padrão definido
+
+
+4) Plano de entrega para a equipe
+
+Fase 1 — Preparação
+
+confirmar tabelas de preço
+confirmar nomes finais dos campos
+confirmar regras de arredondamento
+validar layout desejado do resumo
+
+Fase 2 — Desenvolvimento
+
+implementar regra de faixa
+ajustar plano e pessoas
+implementar serviços adicionais
+implementar treinamento e desconto
+revisar exibição do resumo
+
+Fase 3 — Testes
+
+testar cálculos por cenário
+testar planos diferentes
+testar serviços isolados e combinados
+testar desconto em R$ e %
+testar resumo final
+
+Fase 4 — Homologação
+
+validar com exemplos reais
+comparar com tabela esperada
+corrigir divergências de cálculo
+revisar textos da interface
+
+Fase 5 — Publicação
+
+subir versão final
+monitorar uso
+coletar feedback
+ajustar pequenas inconsistências
+
+Se quiser, no próximo passo eu posso transformar isso em um documento executivo para a equipe, ou em um backlog em formato de tabela por prioridade, responsável e status.

@@ -1,0 +1,50 @@
+v.3
+
+Trabalhando no relatório de tela html
+
+URLs para cada layout:
+1. Layout ZEBRA (padrão - linhas alternadas)
+- http://localhost:8000/proposta/9ae7d7ed/pdf
+- ou http://localhost:8000/proposta/9ae7d7ed/pdf?layout=zebra
+2. Layout CARD (bloco com fundo suave
+- http://localhost:8000/proposta/9ae7d7ed/pdf?layout=card
+3. Layout GRID (tabela com cabeçalhos em cima
+- http://localhost:8000/proposta/9ae7d7ed/pdf?layout=grid
+
+
+ 
+Roadmap Arquitetural: Transição para SSOT (Single Source of Truth)Sprint 
+1: Consolidação da Camada de Apresentação (PDFs)Objetivo: Finalizar os 3 modelos visuais e permitir a escolha pelo usuário, isolando a geração de documentos.
+Passo 1.1: Modularização dos Layouts: Em vez de um único arquivo gigante, criaremos uma estrutura limpa (ex: pdf_zebra.py, pdf_card.py, pdf_grid.py), todos implementando uma mesma interface base (ex: BasePDFGenerator). Isso facilita a manutenção futura.
+Passo 1.2: Atualização do Frontend (UI): Modificar o botão "Gerar PDF" no HTML para abrir um modal simples com 3 opções (Zebra, Card, Grid).
+Passo 1.3: Atualização do Endpoint: O endpoint atual GET /proposta/{hash_id}/pdf passará a receber um parâmetro de query (ex: ?layout=zebra). O FastAPI usará o padrão Factory para instanciar o gerador correto com base nesse parâmetro.
+Marco de Entrega: O usuário consegue gerar propostas em 3 layouts diferentes. Os cálculos continuam como estão hoje (com as pequenas correções que já fizemos).
+Sprint 2: Construção do Motor de Preços (Backend Core)Objetivo: Criar o "cérebro" financeiro do sistema no backend, totalmente isolado do banco de dados e da web.
+Passo 2.1: Criação do PricingService: Criar um módulo Python puro (ex: app/services/pricing.py). Ele receberá apenas os inputs brutos (plano, qtd_usuarios, servicos_adicionais, desconto_aplicado) e retornará um dicionário completo com todos os subtotais, totais e impostos.
+Passo 2.2: Testes Unitários (TDD): Escrever testes automatizados para o PricingService. Vamos testar cenários como: "50 usuários no plano basic + 2 serviços + 10% de desconto". Isso garante que a matemática nunca quebre no futuro.
+Marco de Entrega: Temos um motor de cálculo blindado e testado no backend, mas ele ainda não está conectado ao sistema (não quebra nada).
+Sprint 3: Refatoração do Frontend (Client-Side)Objetivo: Remover a inteligência matemática do JavaScript e transformá-lo em um consumidor do nosso novo motor.
+Passo 3.1: Endpoint de Preview: Criar uma nova rota no FastAPI: POST /api/proposta/preview-calculo. Ela recebe o JSON do formulário em tempo real, passa pelo PricingService e devolve os valores calculados.
+Passo 3.2: "Emburrecimento" do JavaScript: Remover todas as fórmulas matemáticas do seu arquivo HTML/JS. O JS passará a "escutar" as mudanças nos campos (ex: mudou a quantidade de usuários) e fará um fetch silencioso para a rota de preview, atualizando os valores na tela com a resposta do servidor.
+Marco de Entrega: O formulário HTML continua funcionando em tempo real, mas agora é o Python que está fazendo as contas por trás dos panos. A segurança aumenta drasticamente.
+Sprint 4: Fechamento do Ciclo (Persistência e Limpeza)Objetivo: Garantir que o banco de dados e os PDFs usem a mesma fonte de verdade e remover o código legado.
+Passo 4.1: Refatorar o Salvamento: Atualizar a rota que salva/cria a proposta (POST /proposta). Antes de salvar no banco, ela deve passar os dados pelo PricingService para garantir que os valores gravados são os oficiais (ignorando qualquer valor total que o frontend tente enviar).
+Passo 4.2: Refatorar os PDFs: Atualizar os 3 geradores de PDF (criados na Sprint 1) para que eles parem de fazer contas (como subtrair adicionais para achar o valor base). Eles passarão a apenas "imprimir" os valores que já estão mastigados no banco de dados.
+Passo 4.3: Limpeza de Código Morto: Remover variáveis antigas, funções de cálculo obsoletas e limpar o banco de dados se necessário.
+Marco de Entrega: Arquitetura SSOT 100% implementada. Manutenção centralizada, alta segurança e código limpo.
+
+
+
+ 4. Recomendação Arquitetural
+Como Arquiteto, minha recomendação categórica é a adoção da Alternativa A: Backend como Single Source of Truth (SSOT).
+Justificativa e Plano de Ação:
+1.	Remova a inteligência do PDF: O arquivo proposta_pdf_melhorado.py que criamos recentemente já está no caminho certo. Ele recebe um dicionário proposta_data e apenas imprime os dados. Ele não deve calcular descontos ou regras de negócio complexas.
+2.	Remova a inteligência do Frontend (HTML): O JavaScript da tela deve atuar apenas como um coletor de intenções. Quando o usuário altera a quantidade de usuários de 30 para 50, o JS deve fazer uma requisição assíncrona (AJAX/Fetch) para uma rota do FastAPI (ex: POST /api/calculo-preview).
+3.	Crie um PricingService no Backend: Desenvolva um módulo em Python dedicado exclusivamente a calcular preços.  A rota POST /api/calculo-preview usa esse serviço e devolve o JSON para a tela atualizar os valores em tempo real.
+4.	A rota de salvar a proposta usa o mesmo serviço para gravar os valores finais no banco de dados.
+5.	A rota de PDF apenas lê o banco de dados.
+Benefícios Imediatos:
+●	Zero Duplicação: A fórmula matemática existirá em apenas um arquivo Python.
+●	Segurança Absoluta: Impossível fraudar valores via console do navegador.
+●	Manutenção Centralizada: Alterou o preço no backend, o HTML, o Banco de Dados e o PDF refletem a mudança instantaneamente.
+Essa é a arquitetura definitiva para sistemas de faturamento, orçamentos e propostas comerciais que visam escalar sem acumular débito técnico.

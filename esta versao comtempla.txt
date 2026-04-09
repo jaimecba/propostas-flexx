@@ -1,0 +1,27 @@
+Trabalhos a tabela de preços dinamica Ok
+Todas as correções feitas abaixo...
+
+
+Sessão Dados do Cliente
+-o campo CNPJ não aceita tecla backspace
+-ao valida CNPJ esta carregando Nome Fantasia no campo Razao Social (campo Nome Fantasia esta vazio)
+-campo email não indica irregularidade (padrão algumacoisa@algumacoisa.algumacoisa) se der espaço ele acaba aceitando  e não indica irregularidade no campo
+- Campo Whatsapp aceita letras (deve aceitar apenas numeros)
+	
+
+Sessão Plano e Usuários
+não esta calculando o valor da mensalidade * pela faixa correspondente (25 para 30 2,47 p.ex.)
+ - ele esta buscando o valor correta no banco, correspondente a faixa (55 busca o valor da faixa 51-100 2,30)
+
+Sessao Serviços Adicionais (Mensal)
+- Está calculando corretamente os serviços adicionais pela faixa correspondente
+- nao esta carregando o total dos serviços adicionais em "Valor Serviços Adicionais:"
+
+Sessão Escolha o tipo de treinamento
+- Remover o valor do botão "Presencial      (350,00) p.ex. e deixar apenas Presencial, assim tambem para "Híbrido" remover (R$ 250,00), visto que o valor agora vem da tabela no banco de dados.
+- campo Setup Inicial (R$) deve "corrigir" ao digira o valor  100 ao clicar enter, validar como 100,00 p.ex. ou 1000 validar como 1.000,00 
+- campo "Desconto" deve "corrigir" ao digitar o valor  100 ao clicar enter, validar como 100,00 p.ex. ou 1000 validar como 1.000,00
+
+Sessão Resumo da Proposta
+nao esta carregando no resumo da proposta valor dos serviços
+
