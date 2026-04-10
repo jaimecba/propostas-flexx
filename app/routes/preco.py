@@ -102,23 +102,13 @@ def listar_servicos_adicionais(
 ):
     """
     Lista os serviços adicionais com seus preços calculados
-    Busca os dados da tabela tabela_servicos_adicionais
-    
-    Estrutura de retorno:
-    - Licença Facial: R$ 23,90 (valor fixo por unidade)
-    - Gestão de Arquivos: R$ 0,95 × faixa (multiplicado pela faixa)
-    - Controle de Férias: R$ 0,85 × faixa (multiplicado pela faixa)
-    - Mais Requis Cálc Int: R$ 0,45 × faixa (multiplicado pela faixa)
-    
-    Exemplo:
-    - faixa: 30
-    - Resultado: Lista com preços calculados
+    Busca os dados da tabela tabela_precos_servicos_adicionais
     """
     try:
-        # Buscar serviços do banco de dados
+        # Buscar serviços do banco de dados - SEM descricao
         query = text("""
-            SELECT id, nome, preco_unitario, tipo_calculo, descricao
-            FROM tabela_servicos_adicionais
+            SELECT id, nome_servico, valor_unitario, tipo_cobranca
+            FROM tabela_precos_servicos_adicionais
             WHERE ativo = true
             ORDER BY id
         """)
@@ -134,24 +124,23 @@ def listar_servicos_adicionais(
         # Processar os serviços e calcular preços
         servicos = []
         for row in resultado:
-            id_servico, nome, preco_unitario, tipo_calculo, descricao = row
+            id_servico, nome_servico, valor_unitario, tipo_cobranca = row
             
             # Calcular preço baseado no tipo de cálculo
-            if tipo_calculo == "fixo":
-                preco_calculado = float(preco_unitario)
-            elif tipo_calculo == "por_faixa":
-                preco_calculado = round(float(preco_unitario) * faixa, 2)
+            if tipo_cobranca == "fixo":
+                preco_calculado = float(valor_unitario)
+            elif tipo_cobranca == "por_faixa":
+                preco_calculado = round(float(valor_unitario) * faixa, 2)
             else:
-                preco_calculado = float(preco_unitario)
+                preco_calculado = float(valor_unitario)
             
             servicos.append({
                 "id": id_servico,
-                "nome": nome,
-                "preco_unitario": float(preco_unitario),
-                "tipo_calculo": tipo_calculo,
-                "faixa": faixa if tipo_calculo == "por_faixa" else None,
-                "preco_calculado": preco_calculado,
-                "descricao": descricao
+                "nome": nome_servico,
+                "preco_unitario": float(valor_unitario),
+                "tipo_calculo": tipo_cobranca,
+                "faixa": faixa if tipo_cobranca == "por_faixa" else None,
+                "preco_calculado": preco_calculado
             })
         
         return {
@@ -171,27 +160,13 @@ def listar_servicos_adicionais(
 def listar_treinamentos(db: Session = Depends(get_db)):
     """
     Lista os tipos de treinamento disponíveis com seus preços
-    Busca os dados da tabela tabela_treinamentos
-    
-    Estrutura de retorno:
-    - Online: R$ 0,00
-    - Presencial: R$ 350,00
-    - Híbrido: R$ 250,00
-    
-    Exemplo de resposta:
-    {
-        "treinamentos": [
-            {"id": 1, "tipo": "Online", "preco": 0.00},
-            {"id": 2, "tipo": "Presencial", "preco": 350.00},
-            {"id": 3, "tipo": "Híbrido", "preco": 250.00}
-        ]
-    }
+    Busca os dados da tabela tabela_precos_treinamentos
     """
     try:
         # Buscar treinamentos do banco de dados
         query = text("""
-            SELECT id, tipo, preco, descricao
-            FROM tabela_treinamentos
+            SELECT id, tipo_treinamento, valor
+            FROM tabela_precos_treinamentos
             WHERE ativo = true
             ORDER BY id
         """)
@@ -207,12 +182,11 @@ def listar_treinamentos(db: Session = Depends(get_db)):
         # Processar os treinamentos
         treinamentos = []
         for row in resultado:
-            id_treinamento, tipo, preco, descricao = row
+            id_treinamento, tipo_treinamento, valor = row
             treinamentos.append({
                 "id": id_treinamento,
-                "tipo": tipo,
-                "preco": float(preco),
-                "descricao": descricao
+                "tipo": tipo_treinamento,
+                "preco": float(valor)
             })
         
         return {
@@ -231,17 +205,13 @@ def listar_treinamentos(db: Session = Depends(get_db)):
 def buscar_treinamento(tipo: str = Path(..., description="Tipo de treinamento (Online, Presencial, Híbrido)"), db: Session = Depends(get_db)):
     """
     Busca o preço de um tipo específico de treinamento
-    
-    Exemplo:
-    - tipo: "Presencial"
-    - Resultado: {"tipo": "Presencial", "preco": 350.00}
     """
     try:
         # Buscar treinamento do banco de dados
         query = text("""
-            SELECT id, tipo, preco, descricao
-            FROM tabela_treinamentos
-            WHERE LOWER(tipo) = LOWER(:tipo) AND ativo = true
+            SELECT id, tipo_treinamento, valor
+            FROM tabela_precos_treinamentos
+            WHERE LOWER(tipo_treinamento) = LOWER(:tipo) AND ativo = true
         """)
         
         resultado = db.execute(query, {"tipo": tipo}).fetchone()
@@ -252,13 +222,12 @@ def buscar_treinamento(tipo: str = Path(..., description="Tipo de treinamento (O
                 detail=f"Tipo de treinamento '{tipo}' não encontrado. Opções: Online, Presencial, Híbrido"
             )
         
-        id_treinamento, tipo_nome, preco, descricao = resultado
+        id_treinamento, tipo_treinamento, valor = resultado
         
         return {
             "id": id_treinamento,
-            "tipo": tipo_nome,
-            "preco": float(preco),
-            "descricao": descricao
+            "tipo": tipo_treinamento,
+            "preco": float(valor)
         }
     except HTTPException as e:
         raise e
