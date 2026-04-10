@@ -1,0 +1,26 @@
+MIGRAR ENTRE BRACHS
+
+git checkout ou switch "nome da branch"
+
+para saber em qual estar
+git status
+
+estou trabalhando com main e feature/proposta-flexx
+
+para atualizar na main   git pull
+
+
+fluxo
+
+git status feature/propostas-flexx (ambiente de desenvolvimento)
+git add .  (após finalização trabalho)
+git commit -m "minha alteração"   (salvar as alterações)
+git switch main  (mudar para branch prudução local)
+git pull   (carregar as alterações da branch feature)
+git merge feature/propostas-flexx  (atualizar a branch main com alterações da feature)
+git push  (enviar git e automaticamente para render)
+
+Desenvolver	feature
+Salvar (commit)	feature
+Publicar (merge)	main
+Deploy	push na main
