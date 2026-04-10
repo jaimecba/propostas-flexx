@@ -103,14 +103,15 @@ def listar_servicos_adicionais(
     """
     Lista os serviços adicionais com seus preços calculados
     Busca os dados da tabela tabela_precos_servicos_adicionais
+    Remove duplicatas (mesmo serviço para diferentes planos)
     """
     try:
         # Buscar serviços do banco de dados - SEM descricao
         query = text("""
-            SELECT id, nome_servico, valor_unitario, tipo_cobranca
+            SELECT DISTINCT ON (nome_servico) id, nome_servico, valor_unitario, tipo_cobranca
             FROM tabela_precos_servicos_adicionais
             WHERE ativo = true
-            ORDER BY id
+            ORDER BY nome_servico, id
         """)
         
         resultado = db.execute(query).fetchall()
@@ -129,7 +130,7 @@ def listar_servicos_adicionais(
             # Calcular preço baseado no tipo de cálculo
             if tipo_cobranca == "fixo":
                 preco_calculado = float(valor_unitario)
-            elif tipo_cobranca == "por_faixa":
+            elif tipo_cobranca == "faixa":
                 preco_calculado = round(float(valor_unitario) * faixa, 2)
             else:
                 preco_calculado = float(valor_unitario)
@@ -139,7 +140,7 @@ def listar_servicos_adicionais(
                 "nome": nome_servico,
                 "preco_unitario": float(valor_unitario),
                 "tipo_calculo": tipo_cobranca,
-                "faixa": faixa if tipo_cobranca == "por_faixa" else None,
+                "faixa": faixa if tipo_cobranca == "faixa" else None,
                 "preco_calculado": preco_calculado
             })
         
