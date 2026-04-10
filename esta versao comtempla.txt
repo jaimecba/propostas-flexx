@@ -24,4 +24,3 @@ Sessão Escolha o tipo de treinamento
 
 Sessão Resumo da Proposta
 nao esta carregando no resumo da proposta valor dos serviços
-
