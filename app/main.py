@@ -46,6 +46,7 @@ from app.routers import pdf_routes
 from app.routes.proposta import router as proposta_router
 from app.routes.proposta_pdf import router as proposta_pdf_router
 from app.routes.proposta_pdf_melhorado import router as proposta_pdf_router
+from app.config import settings
 
 from app.database import get_db  # 🟢 ADICIONADO: Necessário para o Depends(get_db)
 from app.email_service import email_service
@@ -870,7 +871,7 @@ async def visualizar_proposta(hash_id: str, request: Request, db: Session = Depe
             db.commit()
             db.refresh(proposta)
 
-        link_proposta = gerar_link_proposta(proposta.hash_id)
+        link_proposta = gerar_link_proposta(proposta.hash_id, settings.base_url)
         mensagem_whatsapp = gerar_mensagem_whatsapp(proposta.razao_social, link_proposta)
         link_whatsapp = gerar_link_whatsapp(proposta.whatsapp or "", mensagem_whatsapp)
 
