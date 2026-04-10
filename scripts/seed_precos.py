@@ -1,7 +1,12 @@
 """Script para popular tabelas de preços"""
 import sys
-sys.path.insert(0, '/caminho/para/seu/projeto')
+import os
 
+# Descobre a pasta raiz do projeto (pasta pai de 'scripts')
+pasta_raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, pasta_raiz)
+
+# Agora importa os módulos da pasta 'app'
 from app.database import SessionLocal
 from app.models import PrecoFornecedor, Markup
 
