@@ -767,11 +767,10 @@ async def criar_proposta(
         
         print(f"✅ Proposta salva com sucesso! Total Mensal: R$ {valor_mensal_total} | Avulsos: R$ {total_geral}")
         
-        return {
-            "hash_id": hash_id_gerado,
-            "cliente": razao_social,
-            "link": f"http://localhost:8000/proposta/{hash_id_gerado}"
-        }
+        return RedirectResponse(
+        url=f"{settings.base_url}/proposta/{hash_id_gerado}",
+        status_code=303
+    )
         
     except HTTPException as e:
         raise e
