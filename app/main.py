@@ -588,7 +588,7 @@ async def criar_proposta(
 ):
     # ✅ TESTE SIMPLES
     print(f"\n\nSERVICOS ADICIONAIS: {servicos_adicionais}\n\n", flush=True)
-    
+
     # ✅ NOVO - Escrever em arquivo de log
     with open("debug_proposta.log", "a", encoding="utf-8") as f:
         f.write("\n" + "="*80 + "\n")
@@ -600,7 +600,7 @@ async def criar_proposta(
             for i, srv in enumerate(servicos_adicionais):
                 f.write(f"   [{i}] {srv}\n")
         f.write("="*80 + "\n")
-    
+
     try:
         # 1. Validar CNPJ e Email
         cnpj_valido, msg_cnpj = validar_cnpj(cnpj)
@@ -624,14 +624,13 @@ async def criar_proposta(
         faixa_flexx = math.ceil(usuarios / 10) * 10 if usuarios > 0 else 10
         is_consultar_comercial = False
         if usuarios > 5000 or (plano.lower() == 'desktop' and usuarios > 1000):
-            faixa_flexx = usuarios # Mantém o original para casos "Consultar Comercial"
+            faixa_flexx = usuarios
             is_consultar_comercial = True
 
         # 4. Calcular Valor do Plano
         valor_mensal_plano = Decimal('0.00')
         
         if not is_consultar_comercial:
-            # 🟢 CORREÇÃO 1: Valores FIXOS para até 10 usuários
             if faixa_flexx <= 10:
                 if plano.lower() == 'basic':
                     valor_mensal_plano = Decimal('99.90')
@@ -642,7 +641,6 @@ async def criar_proposta(
                 else:
                     valor_mensal_plano = Decimal('99.90')
             else:
-                # Busca no banco
                 registro_plano = db.query(TabelaPrecosPlanos).filter(
                     TabelaPrecosPlanos.plano.ilike(plano),
                     TabelaPrecosPlanos.faixa_inicio <= usuarios,
@@ -652,10 +650,9 @@ async def criar_proposta(
                 
                 if registro_plano:
                     preco_unitario = registro_plano.valor_mensal
-                    # 🟢 CORREÇÃO 2: Multiplicar por 3.0 (300%) em vez de 2.9
                     valor_mensal_plano = Decimal(str(round(float(preco_unitario) * faixa_flexx * 3.0, 2)))
 
-        # 5. Calcular Serviços Adicionais (VERSÃO CORRIGIDA - SALVA COMO JSON ESTRUTURADO) ✅ NOVO
+        # 5. Calcular Serviços Adicionais
         servicos_json = {}
         valor_servicos = Decimal('0.00')
         
@@ -663,13 +660,21 @@ async def criar_proposta(
             servicos_db = db.query(TabelaPrecosServicosAdicionais).filter(
                 TabelaPrecosServicosAdicionais.ativo == True
             ).all()
+
+            print(f"\n{'='*80}", flush=True)
+            print(f"DEBUG - Serviços no banco:", flush=True)
+            for srv in servicos_db:
+                print(f"  - {srv.nome_servico} (ativo: {srv.ativo})", flush=True)
+            print(f"{'='*80}\n", flush=True)
             
             for servico in servicos_adicionais:
+                print(f"Procurando serviço: {servico}", flush=True)
                 if servico == 'licenca_facial':
-                    srv = next((s for s in servicos_db if s.nome_servico == 'licenca_facial'), None)
+                    srv = next((s for s in servicos_db if s.nome_servico.lower() == 'licença facial'), None)
+                    print(f"  Resultado: {srv}", flush=True)
                     if srv:
                         qtd = qtd_licenca_facial or 1
-                        preco_unit = Decimal(str(srv.valor_unitario))  # ✅ ALTERADO
+                        preco_unit = Decimal(str(srv.valor_unitario))
                         valor_total_srv = preco_unit * Decimal(qtd)
                         valor_servicos += valor_total_srv
                         servicos_json['licenca_facial'] = {
@@ -679,9 +684,10 @@ async def criar_proposta(
                         }
                 
                 elif servico == 'gestao_arquivos':
-                    srv = next((s for s in servicos_db if s.nome_servico == 'gestao_arquivos'), None)
+                    srv = next((s for s in servicos_db if s.nome_servico.lower() == 'gestão de arquivos'), None)
+                    print(f"  Resultado: {srv}", flush=True)
                     if srv:
-                        preco_unit = Decimal(str(srv.valor_unitario))  # ✅ ALTERADO
+                        preco_unit = Decimal(str(srv.valor_unitario))
                         valor_total_srv = preco_unit * Decimal(faixa_flexx)
                         valor_servicos += valor_total_srv
                         servicos_json['gestao_arquivos'] = {
@@ -691,9 +697,10 @@ async def criar_proposta(
                         }
                 
                 elif servico == 'controle_ferias':
-                    srv = next((s for s in servicos_db if s.nome_servico == 'controle_ferias'), None)
+                    srv = next((s for s in servicos_db if s.nome_servico.lower() == 'controle de férias'), None)
+                    print(f"  Resultado: {srv}", flush=True)
                     if srv:
-                        preco_unit = Decimal(str(srv.valor_unitario))  # ✅ ALTERADO
+                        preco_unit = Decimal(str(srv.valor_unitario))
                         valor_total_srv = preco_unit * Decimal(faixa_flexx)
                         valor_servicos += valor_total_srv
                         servicos_json['controle_ferias'] = {
@@ -703,9 +710,10 @@ async def criar_proposta(
                         }
                 
                 elif servico == 'requis_calc_int':
-                    srv = next((s for s in servicos_db if s.nome_servico == 'requis_calc_int'), None)
+                    srv = next((s for s in servicos_db if s.nome_servico.lower() == 'mais requis cálc int'), None)
+                    print(f"  Resultado: {srv}", flush=True)
                     if srv:
-                        preco_unit = Decimal(str(srv.valor_unitario))  # ✅ ALTERADO
+                        preco_unit = Decimal(str(srv.valor_unitario))
                         valor_total_srv = preco_unit * Decimal(faixa_flexx)
                         valor_servicos += valor_total_srv
                         servicos_json['requis_calc_int'] = {
@@ -713,11 +721,11 @@ async def criar_proposta(
                             'preco_unitario': float(preco_unit),
                             'valor_total': float(valor_total_srv)
                         }
-        
-        # Converter para JSON string para salvar no banco ✅ NOVO
+
+        # Converter para JSON string para salvar no banco
         servicos_adicionais_json_str = json.dumps(servicos_json) if servicos_json else '{}'
 
-                # DEBUG - Verificar o que foi criado
+        # DEBUG - Verificar o que foi criado
         print(f"\n\n{'='*80}", flush=True)
         print(f"SERVICOS JSON CRIADO:", flush=True)
         print(f"Tipo: {type(servicos_json)}", flush=True)
@@ -751,7 +759,7 @@ async def criar_proposta(
             setup_ajustado=val_setup,
             treinamento_tipo=treinamento_tipo or "Online",
             treinamento_valor=val_treinamento,
-            servicos_adicionais=servicos_adicionais_json_str,  # ✅ ALTERADO - agora salva JSON
+            servicos_adicionais=servicos_adicionais_json_str,
             desconto_valor=val_desconto,
             desconto_percentual=Decimal('0.00'),
             observacoes=observacoes or "",
@@ -768,10 +776,10 @@ async def criar_proposta(
         print(f"✅ Proposta salva com sucesso! Total Mensal: R$ {valor_mensal_total} | Avulsos: R$ {total_geral}")
         
         return RedirectResponse(
-        url=f"{settings.base_url}/proposta/{hash_id_gerado}",
-        status_code=303
-    )
-        
+            url=f"{settings.base_url}/proposta/{hash_id_gerado}",
+            status_code=303
+        )
+
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -846,7 +854,6 @@ async def teste_proposta_view(hash_id: str, db: Session = Depends(get_db)):
 
 @app.get("/proposta/{hash_id}", response_class=HTMLResponse)
 async def visualizar_proposta(hash_id: str, request: Request, db: Session = Depends(get_db)):
-    1/0
     """Rota para visualizar proposta em HTML com serviços adicionais."""
     
     print(f"\n🔵 ROTA VISUALIZAR PROPOSTA CHAMADA - HASH: {hash_id}", flush=True)

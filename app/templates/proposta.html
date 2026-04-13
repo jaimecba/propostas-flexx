@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
             color: #333;
             line-height: 1.6;
         }
+
         .container {
             max-width: 900px;
             margin: 20px auto;
@@ -22,6 +24,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
+
         header {
             background-color: #007bff;
             color: #ffffff;
@@ -29,20 +32,24 @@
             text-align: center;
             border-bottom: 5px solid #0056b3;
         }
+
         header h1 {
             margin: 0;
             font-size: 2.2em;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
+
         header p {
             margin: 5px 0 0;
             font-size: 1.1em;
             opacity: 0.9;
         }
+
         .content {
             padding: 30px;
         }
+
         .section {
             margin-bottom: 30px;
             border: 1px solid #e0e0e0;
@@ -50,6 +57,7 @@
             padding: 20px;
             background-color: #fdfdfd;
         }
+
         .section h2 {
             color: #007bff;
             font-size: 1.6em;
@@ -58,28 +66,34 @@
             border-bottom: 2px solid #e0e0e0;
             padding-bottom: 10px;
         }
+
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
         }
+
         .info-item {
             padding: 10px 0;
             border-bottom: 1px dashed #eee;
         }
+
         .info-item:last-child {
             border-bottom: none;
         }
+
         .info-item strong {
             display: block;
             color: #555;
             font-size: 0.9em;
             margin-bottom: 3px;
         }
+
         .info-item span {
             font-size: 1.1em;
             color: #333;
         }
+
         .total-summary {
             background-color: #e9f5ff;
             border: 2px solid #007bff;
@@ -88,24 +102,29 @@
             text-align: right;
             margin-top: 20px;
         }
+
         .total-summary p {
             margin: 5px 0;
             font-size: 1.2em;
             font-weight: 500;
         }
+
         .total-summary .final-total {
             font-size: 1.8em;
             font-weight: 700;
             color: #0056b3;
             margin-top: 10px;
         }
+
         .actions {
             text-align: center;
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #e0e0e0;
         }
-        .actions button, .actions a {
+
+        .actions button,
+        .actions a {
             display: inline-block;
             padding: 12px 25px;
             margin: 8px;
@@ -117,37 +136,48 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             border: none;
         }
-        .actions button:hover, .actions a:hover {
+
+        .actions button:hover,
+        .actions a:hover {
             transform: translateY(-2px);
         }
+
         .btn-accept {
             background-color: #28a745;
             color: white;
         }
+
         .btn-accept:hover {
             background-color: #218838;
         }
+
         .btn-reject {
             background-color: #dc3545;
             color: white;
         }
+
         .btn-reject:hover {
             background-color: #c82333;
         }
+
         .btn-whatsapp {
             background-color: #25d366;
             color: white;
         }
+
         .btn-whatsapp:hover {
             background-color: #1da851;
         }
+
         .btn-back {
             background-color: #6c757d;
             color: white;
         }
+
         .btn-back:hover {
             background-color: #5a6268;
         }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -156,6 +186,7 @@
             border-top: 1px solid #e0e0e0;
             margin-top: 30px;
         }
+
         .badge {
             display: inline-block;
             padding: 0.4em 0.7em;
@@ -168,11 +199,32 @@
             border-radius: 0.25rem;
             margin-left: 10px;
         }
-        .badge-pendente { background-color: #ffc107; color: #333; }
-        .badge-aceita { background-color: #28a745; color: white; }
-        .badge-rejeitada { background-color: #dc3545; color: white; }
-        .badge-expirada { background-color: #6c757d; color: white; }
-        .badge-secondary { background-color: #adb5bd; color: white; }
+
+        .badge-pendente {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .badge-aceita {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-rejeitada {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .badge-expirada {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .badge-secondary {
+            background-color: #adb5bd;
+            color: white;
+        }
+
         .alert {
             padding: 15px;
             margin-bottom: 20px;
@@ -181,26 +233,32 @@
             font-size: 1.1em;
             font-weight: 500;
         }
+
         .alert-warning {
             color: #856404;
             background-color: #fff3cd;
             border-color: #ffeeba;
         }
+
         .alert-danger {
             color: #721c24;
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+
         .alert-success {
             color: #155724;
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
+
         @media (max-width: 768px) {
             .info-grid {
                 grid-template-columns: 1fr;
             }
-            .actions button, .actions a {
+
+            .actions button,
+            .actions a {
                 display: block;
                 width: calc(100% - 16px);
                 margin: 8px auto;
@@ -208,85 +266,88 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header style="position: relative;">
-    <h1><i class="fas fa-file-invoice"></i> {{ app_name }}</h1>
-    <p>Detalhes da Proposta Comercial</p>
-</header>
+            <h1><i class="fas fa-file-invoice"></i> {{ app_name }}</h1>
+            <p>Detalhes da Proposta Comercial</p>
+        </header>
 
-<div class="content">
-    {% if is_expirada %}
-    <div class="alert alert-danger">
-        <i class="fas fa-exclamation-triangle"></i> Esta proposta está expirada desde {{ data_validade }}.
-    </div>
-    {% elif status == 'REJEITADA' %}
-    <div class="alert alert-danger">
-        <i class="fas fa-times-circle"></i> Esta proposta foi rejeitada.
-    </div>
-    {% elif status == 'ACEITA' %}
-    <div class="alert alert-success">
-        <i class="fas fa-check-circle"></i> Esta proposta foi aceita!
-    </div>
-    {% endif %}
+        <div class="content">
+            {% if is_expirada %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i> Esta proposta está expirada desde {{ data_validade }}.
+            </div>
+            {% elif status == 'REJEITADA' %}
+            <div class="alert alert-danger">
+                <i class="fas fa-times-circle"></i> Esta proposta foi rejeitada.
+            </div>
+            {% elif status == 'ACEITA' %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> Esta proposta foi aceita!
+            </div>
+            {% endif %}
 
-    <div class="section">
-        <h2><i class="fas fa-info-circle"></i> Informações Gerais</h2>
-        <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: start;">
-            <div class="info-item">
-                <strong>ID da Proposta:</strong>
-                <span style="font-size: 0.9em;">{{ hash_id }}</span>
+            <div class="section">
+                <h2><i class="fas fa-info-circle"></i> Informações Gerais</h2>
+                <div class="info-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: start;">
+                    <div class="info-item">
+                        <strong>ID da Proposta:</strong>
+                        <span style="font-size: 0.9em;">{{ hash_id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status:</strong>
+                        {% if status == 'PENDENTE' %}
+                        <span class="badge badge-pendente" style="font-size: 0.9em;">{{ status }}</span>
+                        {% elif status == 'ACEITA' %}
+                        <span class="badge badge-aceita" style="font-size: 0.9em;">{{ status }}</span>
+                        {% elif status == 'REJEITADA' %}
+                        <span class="badge badge-rejeitada" style="font-size: 0.9em;">{{ status }}</span>
+                        {% elif status == 'EXPIRADA' %}
+                        <span class="badge badge-expirada" style="font-size: 0.9em;">{{ status }}</span>
+                        {% else %}
+                        <span class="badge badge-secondary" style="font-size: 0.9em;">{{ status }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="info-item">
+                        <strong>Data de Validade:</strong>
+                        <span style="font-size: 0.9em;">{{ data_validade }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Data de Criação:</strong>
+                        <span style="font-size: 0.9em;">{{ data_criacao[:-3] }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="info-item">
-                <strong>Status:</strong>
-                {% if status == 'PENDENTE' %}
-                    <span class="badge badge-pendente" style="font-size: 0.9em;">{{ status }}</span>
-                {% elif status == 'ACEITA' %}
-                    <span class="badge badge-aceita" style="font-size: 0.9em;">{{ status }}</span>
-                {% elif status == 'REJEITADA' %}
-                    <span class="badge badge-rejeitada" style="font-size: 0.9em;">{{ status }}</span>
-                {% elif status == 'EXPIRADA' %}
-                    <span class="badge badge-expirada" style="font-size: 0.9em;">{{ status }}</span>
-                {% else %}
-                    <span class="badge badge-secondary" style="font-size: 0.9em;">{{ status }}</span>
-                {% endif %}
-            </div>
-            <div class="info-item">
-                <strong>Data de Validade:</strong>
-                <span style="font-size: 0.9em;">{{ data_validade }}</span>
-            </div>
-            <div class="info-item">
-                <strong>Data de Criação:</strong>
-                <span style="font-size: 0.9em;">{{ data_criacao[:-3] }}</span>
-            </div>
-        </div>
-    </div>
 
-<div class="section">
-    <h2><i class="fas fa-user-tie"></i> Dados do Cliente</h2>
-    <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: start;">
-        <div class="info-item">
-            <strong>Nome/Razão Social:</strong>
-            <span style="font-size: 0.9em;">{{ cliente_nome }}</span>
-        </div>
-        <div class="info-item">
-            <strong>Nome Fantasia:</strong>
-            <span style="font-size: 0.9em;">{{ nome_fantasia }}</span>
-        </div>
-        <div class="info-item">
-            <strong>CNPJ:</strong>
-            <span style="font-size: 0.9em;">{{ cnpj }}</span>
-        </div>
-        <div class="info-item">
-            <strong>Email:</strong>
-            <span style="font-size: 0.9em;">{{ email }}</span>
-        </div>
-        <div class="info-item">
-            <strong>WhatsApp:</strong>
-            <span style="font-size: 0.9em;">{{ whatsapp }}</span>
-        </div>
-    </div>
-</div>
+            <div class="section">
+                <h2><i class="fas fa-user-tie"></i> Dados do Cliente</h2>
+                <div class="info-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: start;">
+                    <div class="info-item">
+                        <strong>Nome/Razão Social:</strong>
+                        <span style="font-size: 0.9em;">{{ cliente_nome }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Nome Fantasia:</strong>
+                        <span style="font-size: 0.9em;">{{ nome_fantasia }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>CNPJ:</strong>
+                        <span style="font-size: 0.9em;">{{ cnpj }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Email:</strong>
+                        <span style="font-size: 0.9em;">{{ email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>WhatsApp:</strong>
+                        <span style="font-size: 0.9em;">{{ whatsapp }}</span>
+                    </div>
+                </div>
+            </div>
 
             <div class="section">
                 <h2><i class="fas fa-cogs"></i> Plano e Pessoas</h2>
@@ -306,129 +367,155 @@
                 </div>
             </div>
 
-<!-- INÍCIO - SEÇÃO DE SERVIÇOS ADICIONAIS (MENSAL) -->
-<div class="section">
-    <h2><i class="fas fa-plus-circle"></i> Serviços Adicionais (Mensal)</h2>
-    
-    {% if servicos_adicionais_json and servicos_adicionais_json != {} %}
-        <div style="margin-bottom: 20px;">
-            {% set servicos = servicos_adicionais_json %}
-            
-            {% if servicos.licenca_facial %}
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
-                <div>
-                    <strong style="color: #007bff;">Licença Facial</strong>
-                    <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
-                        Qtd: {{ servicos.licenca_facial.quantidade }} | Unitário: {{ formatar_moeda(servicos.licenca_facial.preco_unitario) }}
+            <!-- INÍCIO - SEÇÃO DE SERVIÇOS ADICIONAIS (MENSAL) -->
+            <div class="section">
+                <h2><i class="fas fa-plus-circle"></i> Serviços Adicionais (Mensal)</h2>
+
+                {% if servicos_adicionais_json and servicos_adicionais_json != {} %}
+                <div style="margin-bottom: 20px;">
+                    {% set servicos = servicos_adicionais_json %}
+
+                    {% if servicos.licenca_facial %}
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <div>
+                            <strong style="color: #007bff;">Licença Facial</strong>
+                            <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
+                                Qtd: {{ servicos.licenca_facial.quantidade }} | Unitário: {{
+                                fmt(servicos.licenca_facial.preco_unitario) }}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: #28a745; font-size: 1.1em;">{{
+                                fmt(servicos.licenca_facial.valor_total) }}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if servicos.gestao_arquivos %}
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <div>
+                            <strong style="color: #007bff;">Gestão de Arquivos</strong>
+                            <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
+                                Qtd: {{ servicos.gestao_arquivos.quantidade }} | Unitário: {{
+                                formatar_moeda(servicos.gestao_arquivos.preco_unitario) }}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: #28a745; font-size: 1.1em;">{{
+                                formatar_moeda(servicos.gestao_arquivos.valor_total) }}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if servicos.controle_ferias %}
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <div>
+                            <strong style="color: #007bff;">Controle de Férias</strong>
+                            <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
+                                Qtd: {{ servicos.controle_ferias.quantidade }} | Unitário: {{
+                                formatar_moeda(servicos.controle_ferias.preco_unitario) }}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: #28a745; font-size: 1.1em;">{{
+                                formatar_moeda(servicos.controle_ferias.valor_total) }}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if servicos.requis_calc_int %}
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <div>
+                            <strong style="color: #007bff;">Mais Requis Cálc Int</strong>
+                            <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
+                                Qtd: {{ servicos.requis_calc_int.quantidade }} | Unitário: {{
+                                formatar_moeda(servicos.requis_calc_int.preco_unitario) }}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: #28a745; font-size: 1.1em;">{{
+                                formatar_moeda(servicos.requis_calc_int.valor_total) }}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 15px 0;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #e9f5ff; border-radius: 4px;">
+                        <span style="font-weight: 600; color: #0056b3;">Valor Total Serviços Adicionais:</span>
+                        <span style="font-size: 1.3em; font-weight: bold; color: #0056b3;">{{ valor_servicos_adicionais
+                            }}</span>
                     </div>
                 </div>
-                <div style="text-align: right;">
-                    <strong style="color: #28a745; font-size: 1.1em;">{{ formatar_moeda(servicos.licenca_facial.valor_total) }}</strong>
+                {% else %}
+                <div
+                    style="padding: 15px; background-color: #f8f9fa; border-left: 4px solid #ffc107; border-radius: 4px;">
+                    <p style="margin: 0; color: #856404;">
+                        <i class="fas fa-info-circle"></i> Nenhum serviço adicional foi selecionado para esta proposta.
+                    </p>
                 </div>
+                {% endif %}
             </div>
-            {% endif %}
-            
-            {% if servicos.gestao_arquivos %}
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
-                <div>
-                    <strong style="color: #007bff;">Gestão de Arquivos</strong>
-                    <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
-                        Qtd: {{ servicos.gestao_arquivos.quantidade }} | Unitário: {{ formatar_moeda(servicos.gestao_arquivos.preco_unitario) }}
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <strong style="color: #28a745; font-size: 1.1em;">{{ formatar_moeda(servicos.gestao_arquivos.valor_total) }}</strong>
-                </div>
-            </div>
-            {% endif %}
-            
-            {% if servicos.controle_ferias %}
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
-                <div>
-                    <strong style="color: #007bff;">Controle de Férias</strong>
-                    <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
-                        Qtd: {{ servicos.controle_ferias.quantidade }} | Unitário: {{ formatar_moeda(servicos.controle_ferias.preco_unitario) }}
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <strong style="color: #28a745; font-size: 1.1em;">{{ formatar_moeda(servicos.controle_ferias.valor_total) }}</strong>
-                </div>
-            </div>
-            {% endif %}
-            
-            {% if servicos.requis_calc_int %}
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
-                <div>
-                    <strong style="color: #007bff;">Mais Requis Cálc Int</strong>
-                    <div style="font-size: 0.85em; color: #6c757d; margin-top: 3px;">
-                        Qtd: {{ servicos.requis_calc_int.quantidade }} | Unitário: {{ formatar_moeda(servicos.requis_calc_int.preco_unitario) }}
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <strong style="color: #28a745; font-size: 1.1em;">{{ formatar_moeda(servicos.requis_calc_int.valor_total) }}</strong>
-                </div>
-            </div>
-            {% endif %}
-            
-            <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 15px 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #e9f5ff; border-radius: 4px;">
-                <span style="font-weight: 600; color: #0056b3;">Valor Total Serviços Adicionais:</span>
-                <span style="font-size: 1.3em; font-weight: bold; color: #0056b3;">{{ valor_servicos_adicionais }}</span>
-            </div>
-        </div>
-    {% else %}
-        <div style="padding: 15px; background-color: #f8f9fa; border-left: 4px solid #ffc107; border-radius: 4px;">
-            <p style="margin: 0; color: #856404;">
-                <i class="fas fa-info-circle"></i> Nenhum serviço adicional foi selecionado para esta proposta.
-            </p>
-        </div>
-    {% endif %}
-</div>
-<!-- FIM - SEÇÃO DE SERVIÇOS ADICIONAIS (MENSAL) -->
+            <!-- FIM - SEÇÃO DE SERVIÇOS ADICIONAIS (MENSAL) -->
 
             <div class="section">
                 <h2><i class="fas fa-dollar-sign"></i> Resumo da Proposta</h2>
-                
+
                 <!-- 1. Valor Total do Contrato (Mensal) -->
-<div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #007bff; border-radius: 4px;">
-    <h4 style="color: #007bff; margin-top: 0; margin-bottom: 10px; font-size: 1.1em;">Valor Total do Contrato (Mensal)</h4>
-    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 15px;">
-        <p style="font-size: 1.4em; font-weight: bold; color: #28a745; margin: 0;">{{ valor_mensal_total }}</p>
-        <small style="color: #6c757d;">(Soma da Mensalidade + Serviços Adicionais)</small>
-    </div>
-</div>
-                
+                <div
+                    style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #007bff; border-radius: 4px;">
+                    <h4 style="color: #007bff; margin-top: 0; margin-bottom: 10px; font-size: 1.1em;">Valor Total do
+                        Contrato (Mensal)</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 15px;">
+                        <p style="font-size: 1.4em; font-weight: bold; color: #28a745; margin: 0;">{{ valor_mensal_total
+                            }}</p>
+                        <small style="color: #6c757d;">(Soma da Mensalidade + Serviços Adicionais)</small>
+                    </div>
+                </div>
+
                 <!-- 2. Valor dos Serviços Avulsos (Cobrança Única) -->
-                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #17a2b8; border-radius: 4px;">
-                    <h4 style="color: #17a2b8; margin-top: 0; margin-bottom: 15px; font-size: 1.1em;">Valor dos Serviços Avulsos (Cobrança Única)</h4>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #dee2e6; padding-bottom: 5px;">
+                <div
+                    style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #17a2b8; border-radius: 4px;">
+                    <h4 style="color: #17a2b8; margin-top: 0; margin-bottom: 15px; font-size: 1.1em;">Valor dos Serviços
+                        Avulsos (Cobrança Única)</h4>
+
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #dee2e6; padding-bottom: 5px;">
                         <span style="color: #495057;">Setup de Implantação:</span>
                         <strong style="color: #343a40;">{{ setup_formatado }}</strong>
                     </div>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #dee2e6; padding-bottom: 5px;">
+
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #dee2e6; padding-bottom: 5px;">
                         <span style="color: #495057;">Treinamento:</span>
                         <strong style="color: #343a40;">{{ treinamento_formatado }}</strong>
                     </div>
-                    
+
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <span style="color: #495057; font-weight: 600;">Total Avulsos:</span>
                         <span style="font-size: 1.2em; font-weight: bold; color: #17a2b8;">{{ avulsos_total }}</span>
                     </div>
                 </div>
-                
+
                 <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 25px 0;">
-                
+
                 <!-- 3. Total Geral -->
-                <div class="total-summary" style="background-color: #e9f5ff; border: 2px solid #007bff; padding: 20px; border-radius: 8px; text-align: right;">
+                <div class="total-summary"
+                    style="background-color: #e9f5ff; border: 2px solid #007bff; padding: 20px; border-radius: 8px; text-align: right;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #dc3545;">
                         <span>Desconto Aplicado:</span>
                         <strong>- {{ desconto_formatado }}</strong>
                     </div>
-                    
-                    <h4 style="color: #0056b3; margin-top: 15px; margin-bottom: 5px; font-size: 1.2em; text-transform: uppercase;">TOTAL GERAL A PAGAR (AVULSOS)</h4>
-                    <p class="final-total" style="font-size: 2em; font-weight: 700; color: #0056b3; margin: 0;">{{ total_geral_avulsos }}</p>
+
+                    <h4
+                        style="color: #0056b3; margin-top: 15px; margin-bottom: 5px; font-size: 1.2em; text-transform: uppercase;">
+                        TOTAL GERAL A PAGAR (AVULSOS)</h4>
+                    <p class="final-total" style="font-size: 2em; font-weight: 700; color: #0056b3; margin: 0;">{{
+                        total_geral_avulsos }}</p>
                     <small style="color: #6c757d; display: block; margin-top: 5px;">(Total Avulsos - Desconto)</small>
                 </div>
             </div>
@@ -442,22 +529,29 @@
             {% endif %}
 
             <div class="actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
-    {% if status == 'PENDENTE' and not is_expirada %}
-    <form action="/proposta/{{ hash_id }}/aceitar" method="post" style="display:inline-block;">
-        <button type="submit" class="btn-accept" style="font-size: 0.75em; padding: 8px 12px;"><i class="fas fa-check-circle"></i> Aceitar Proposta</button>
-    </form>
-    <form action="/proposta/{{ hash_id }}/rejeitar" method="post" style="display:inline-block;">
-        <button type="submit" class="btn-reject" style="font-size: 0.75em; padding: 8px 12px;"><i class="fas fa-times-circle"></i> Rejeitar Proposta</button>
-    </form>
-    {% endif %}
-    <a href="/proposta/{{ hash_id }}/pdf" target="_blank" class="btn-back" style="background-color: #6c757d; font-size: 0.75em; padding: 8px 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><i class="fas fa-file-pdf"></i> Baixar PDF</a>
-    <a href="/" class="btn-back" style="font-size: 0.75em; padding: 8px 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><i class="fas fa-arrow-left"></i> Voltar para o Início</a>
-</div>
+                {% if status == 'PENDENTE' and not is_expirada %}
+                <form action="/proposta/{{ hash_id }}/aceitar" method="post" style="display:inline-block;">
+                    <button type="submit" class="btn-accept" style="font-size: 0.75em; padding: 8px 12px;"><i
+                            class="fas fa-check-circle"></i> Aceitar Proposta</button>
+                </form>
+                <form action="/proposta/{{ hash_id }}/rejeitar" method="post" style="display:inline-block;">
+                    <button type="submit" class="btn-reject" style="font-size: 0.75em; padding: 8px 12px;"><i
+                            class="fas fa-times-circle"></i> Rejeitar Proposta</button>
+                </form>
+                {% endif %}
+                <a href="/proposta/{{ hash_id }}/pdf" target="_blank" class="btn-back"
+                    style="background-color: #6c757d; font-size: 0.75em; padding: 8px 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><i
+                        class="fas fa-file-pdf"></i> Baixar PDF</a>
+                <a href="/" class="btn-back"
+                    style="font-size: 0.75em; padding: 8px 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><i
+                        class="fas fa-arrow-left"></i> Voltar para o Início</a>
+            </div>
 
-        <footer>
-            <p>&copy; 2026 {{ app_name }}. Todos os direitos reservados. Versão {{ version }}.</p>
-            <p>Proposta ID: {{ hash_id }}</p>
-        </footer>
-    </div>
+            <footer>
+                <p>&copy; 2026 {{ app_name }}. Todos os direitos reservados. Versão {{ version }}.</p>
+                <p>Proposta ID: {{ hash_id }}</p>
+            </footer>
+        </div>
 </body>
+
 </html>

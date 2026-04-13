@@ -24,37 +24,11 @@ def fmt(valor: Any) -> str:
         return f"R$ {valor_decimal:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     except Exception:
         return "R$ 0,00"
-
-
-def formatar_data(data: Any) -> str:
-    """Formata uma data para o padrão brasileiro (DD/MM/YYYY HH:MM:SS)"""
-    if data is None:
-        return "Não informado"
-    try:
-        if isinstance(data, str):
-            data = datetime.fromisoformat(data.replace('Z', '+00:00'))
-        return data.strftime("%d/%m/%Y %H:%M:%S")
-    except Exception:
-        return "Não informado"
-
-
-def formatar_data_curta(data: Any) -> str:
-    """Formata uma data para o padrão brasileiro curto (DD/MM/YYYY)"""
-    if data is None:
-        return "Não informado"
-    try:
-        if isinstance(data, str):
-            data = datetime.fromisoformat(data.replace('Z', '+00:00'))
-        return data.strftime("%d/%m/%Y")
-    except Exception:
-        return "Não informado"
-
-
+    
 def processar_servicos_adicionais(servicos: Any) -> Dict[str, Any]:
     """Converte servicos_adicionais em dicionário estruturado"""
     if not servicos:
         return {}
-
     try:
         # Se for string JSON, faz parse
         if isinstance(servicos, str):
@@ -93,6 +67,28 @@ def calcular_total_servicos(servicos_dict: Dict[str, Any]) -> Decimal:
     
     return total
 
+def formatar_data(data: Any) -> str:
+    """Formata uma data para o padrão brasileiro (DD/MM/YYYY HH:MM:SS)"""
+    if data is None:
+        return "Não informado"
+    try:
+        if isinstance(data, str):
+            data = datetime.fromisoformat(data.replace('Z', '+00:00'))
+        return data.strftime("%d/%m/%Y %H:%M:%S")
+    except Exception:
+        return "Não informado"
+
+
+def formatar_data_curta(data: Any) -> str:
+    """Formata uma data para o padrão brasileiro curto (DD/MM/YYYY)"""
+    if data is None:
+        return "Não informado"
+    try:
+        if isinstance(data, str):
+            data = datetime.fromisoformat(data.replace('Z', '+00:00'))
+        return data.strftime("%d/%m/%Y")
+    except Exception:
+        return "Não informado"
 
 def get_safe_str(obj: Any, attr: str, default: str = "Não informado") -> str:
     """Obtém um atributo como string de forma segura"""
@@ -138,7 +134,9 @@ async def visualizar_proposta(hash_id: str, request: Request, db: Session = Depe
 
     # ✅ NOVO - Processamento de serviços adicionais como DICIONÁRIO
     servicos_adicionais_json = processar_servicos_adicionais(proposta.servicos_adicionais)
-    valor_servicos_adicionais = calcular_total_servicos(servicos_adicionais_json)
+    valor_servicos_adicionais = fmt(calcular_total_servicos(servicos_adicionais_json))
+
+
 
     # Construção do dicionário de contexto
     contexto = {
@@ -166,6 +164,10 @@ async def visualizar_proposta(hash_id: str, request: Request, db: Session = Depe
         "setup_padrao": fmt(get_safe_decimal(proposta, 'setup_padrao')),
         "setup_ajustado": fmt(get_safe_decimal(proposta, 'setup_ajustado')),
         "treinamento_valor": fmt(treinamento_valor),
+
+        # ✅ NOVAS LINHAS - Tipo e Valor do Treinamento para o Template
+        "treinamento_tipo_display": get_safe_str(proposta, 'treinamento_tipo', 'online'),
+        "treinamentoValor": fmt(treinamento_valor),
 
         # Desconto
         "desconto_percentual": f"{desconto_percentual_val.quantize(Decimal('0.01'))}%",
@@ -204,7 +206,7 @@ async def visualizar_proposta(hash_id: str, request: Request, db: Session = Depe
 
         # ✅ Serviços Adicionais - AGORA COMO DICIONÁRIO
         "servicos_adicionais_json": servicos_adicionais_json,
-        "valor_servicos_adicionais": fmt(valor_servicos_adicionais),
+        "valor_servicos_adicionais": valor_servicos_adicionais,
         
         # Métodos do modelo
         "total_visualizacoes": proposta.total_visualizacoes() if hasattr(proposta, 'total_visualizacoes') and callable(proposta.total_visualizacoes) else 0,
@@ -212,6 +214,7 @@ async def visualizar_proposta(hash_id: str, request: Request, db: Session = Depe
 
         # Funções auxiliares
         "formatar_moeda": fmt,
+        "fmt": fmt,
         "formatar_data": formatar_data,
         "formatar_data_curta": formatar_data_curta,
     }
